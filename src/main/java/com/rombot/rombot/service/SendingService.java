@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class SendingService {
     final static String MESSAGING_PRODUCT = "whatsapp";
     final static String MESSAGE_TYPE = "template";
-    final static String BASE_URL = "https://graph.facebook.com/v17.0/109129788925398/messages";
+    final static String BASE_URL = "https://graph.facebook.com/v17.0/YOUR_PHONE_ID/messages";
     @Value("${lang.code}")
     String languageCode;
     @Value("${auth.token}")
