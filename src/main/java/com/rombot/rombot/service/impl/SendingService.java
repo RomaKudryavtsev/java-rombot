@@ -61,7 +61,12 @@ public class SendingService implements ISendingService {
 
     @Override
     public Mono<Void> cancelSending() {
-        isSending = false;
+        if(!isSending) {
+            log.error("Sending service is not running");
+        } else {
+            isSending = false;
+            log.info("Cancelling messages");
+        }
         return Mono.empty();
     }
 
