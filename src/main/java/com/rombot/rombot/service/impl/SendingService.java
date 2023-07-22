@@ -84,10 +84,7 @@ public class SendingService implements ISendingService {
     }
 
     private Mono<Result> saveResult(SourceContact sourceContact) {
-        Result result = new Result();
-        result.setPhone(sourceContact.getPhone());
-        result.setName(sourceContact.getName());
-        result.setSent(LocalDateTime.now());
+        Result result = ResultMapper.sourceContactToResult(sourceContact);
         return resultRepo.save(result);
     }
 
