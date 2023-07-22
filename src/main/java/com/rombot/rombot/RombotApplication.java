@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @ComponentScan(basePackages = "com.rombot.rombot")
 @OpenAPIDefinition(info = @Info(
         title = "rombot",
-        version = "1.0",
+        version = "1.1",
         description = "Reactive WhatsApp message sending tool"))
 public class RombotApplication {
     public static void main(String[] args) {
