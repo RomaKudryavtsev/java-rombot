@@ -44,9 +44,9 @@ public class SendingService {
 
     public Flux<ResultDto> startSending(String templateName) {
         return sourceRepo.findAll()
+                .delayElements(Duration.ofSeconds(EMISSION_DELAY_SEC))
                 .flatMap(sourceContact -> resultRepo.existsByPhone(sourceContact.getPhone()).flatMap(b ->
                         b ? Mono.empty() : Mono.just(sourceContact)))
-                .delayElements(Duration.ofSeconds(EMISSION_DELAY_SEC))
                 .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)
                 .flatMap(sourceContact -> this.sendMessage(sourceContact, templateName)
                         .flatMap(resp -> this.saveResult(sourceContact)))
