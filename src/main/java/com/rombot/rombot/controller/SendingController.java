@@ -28,8 +28,9 @@ public class SendingController {
     )
     @PostMapping(value = "/send", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ResultDto> sendMessage(@RequestParam("template") String templateName,
-                                       @RequestParam(name = "number", required = false) Integer numberOfMessages) {
-        return service.startSending(templateName, numberOfMessages)
+                                       @RequestParam(name = "number", required = false) Integer numberOfMessages,
+                                       @RequestParam(name = "delay_sec", required = false, defaultValue = "3") Integer delay) {
+        return service.startSending(templateName, numberOfMessages, delay)
                 .doOnSubscribe(subscription -> log.info("Start sending"))
                 .doOnComplete(() -> log.info("Finished sending"));
     }

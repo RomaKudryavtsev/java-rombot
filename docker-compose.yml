@@ -1,0 +1,19 @@
+version: '3'
+services:
+  rombot:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo_db_rombot
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo_db_rombot:27017/rombot
+  mongo_db_rombot:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db  # Mount a Docker volume to persist MongoDB data
+
+volumes:
+  mongodata:  # Define the Docker volume for MongoDB data persistence

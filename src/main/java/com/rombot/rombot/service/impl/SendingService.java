@@ -24,7 +24,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
@@ -34,7 +33,6 @@ import java.util.Arrays;
 public class SendingService implements ISendingService {
     final static String MESSAGING_PRODUCT = "whatsapp";
     final static String MESSAGE_TYPE = "template";
-    final static long EMISSION_DELAY_SEC = 5;
     final static int BACKPRESSURE_BUFFER_SIZE = 50;
     @Value("${rombot.lang.code}")
     String languageCode;
@@ -46,10 +44,10 @@ public class SendingService implements ISendingService {
     boolean isSending;
 
     @Override
-    public Flux<ResultDto> startSending(String templateName, Integer numberOfMessages) {
+    public Flux<ResultDto> startSending(String templateName, Integer numberOfMessages, Integer delay) {
         isSending = true;
         return configureMainPipeline(numberOfMessages)
-                .delayElements(Duration.ofSeconds(EMISSION_DELAY_SEC))
+                .delayElements(Duration.ofSeconds(delay))
                 .flatMap(sourceContact -> resultRepo.existsByPhone(sourceContact.getPhone()).flatMap(b ->
                         b ? Mono.empty() : Mono.just(sourceContact)))
                 .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)

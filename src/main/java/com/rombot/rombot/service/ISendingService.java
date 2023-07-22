@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ISendingService {
-    Flux<ResultDto> startSending(String templateName, Integer numberOfMessages);
+    Flux<ResultDto> startSending(String templateName, Integer numberOfMessages, Integer delay);
 
     Mono<Void> cancelSending();
 }
