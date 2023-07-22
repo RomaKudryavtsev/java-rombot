@@ -11,13 +11,13 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "com.rombot.rombot")
 @ComponentScan(basePackages = "com.rombot.rombot")
 @OpenAPIDefinition(info = @Info(
-		title = "rombot",
-		version = "1.0",
-		description = "Reactive WhatsApp message sending tool"))
+        title = "rombot",
+        version = "1.0",
+        description = "Reactive WhatsApp message sending tool"))
 public class RombotApplication {
-	//To see Swagger UI use this link: http://localhost:8080/swagger-ui
-	public static void main(String[] args) {
-		SpringApplication.run(RombotApplication.class, args);
-	}
+    //To see Swagger UI use this link: http://localhost:8080/swagger-ui
+    public static void main(String[] args) {
+        SpringApplication.run(RombotApplication.class, args);
+    }
 
 }

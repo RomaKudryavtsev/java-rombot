@@ -1,5 +1,11 @@
 package com.rombot.rombot.exception;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessageException extends RuntimeException {
     String phone;
     String message;
