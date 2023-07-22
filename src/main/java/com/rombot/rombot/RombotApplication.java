@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         version = "1.0",
         description = "Reactive WhatsApp message sending tool"))
 public class RombotApplication {
-    //To see Swagger UI use this link: http://localhost:8080/swagger-ui
     public static void main(String[] args) {
         SpringApplication.run(RombotApplication.class, args);
+        System.out.println("rombot v1.1\nTo see Swagger UI use this link: http://localhost:8080/swagger-ui");
     }
 
 }
