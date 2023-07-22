@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -62,6 +63,7 @@ public class SendingService {
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                 .bodyValue(setSendRequest(sourceContact.getPhone(), templateName))
                 .retrieve().bodyToMono(SendMessageResponse.class)
+                .doOnNext(sendMessageResponse -> log.info(Arrays.toString(sendMessageResponse.getContacts())))
                 .onErrorMap(error -> new SendMessageException(sourceContact.getPhone(), error.getMessage()))
                 .doOnCancel(() -> handleSendMessageCancel(sourceContact));
     }
