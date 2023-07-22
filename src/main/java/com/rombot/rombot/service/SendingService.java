@@ -49,9 +49,7 @@ public class SendingService {
                 .delayElements(Duration.ofSeconds(EMISSION_DELAY_SEC))
                 .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)
                 .flatMap(sourceContact -> this.sendMessage(sourceContact, templateName)
-                        .flatMap(resp -> this.saveResult(sourceContact))
-                        .onErrorMap(error -> new SendMessageException(sourceContact.getPhone(), error.getMessage()))
-                        .doOnCancel(() -> handleSendMessageCancel(sourceContact)))
+                        .flatMap(resp -> this.saveResult(sourceContact)))
                 .map(ResultMapper::entityToDto)
                 .onErrorContinue((ex, errorResp) -> log.error(ex.getMessage()))
                 .doOnCancel(this::handleMainPipelineCancel);
@@ -63,7 +61,9 @@ public class SendingService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                 .bodyValue(setSendRequest(sourceContact.getPhone(), templateName))
-                .retrieve().bodyToMono(SendMessageResponse.class);
+                .retrieve().bodyToMono(SendMessageResponse.class)
+                .onErrorMap(error -> new SendMessageException(sourceContact.getPhone(), error.getMessage()))
+                .doOnCancel(() -> handleSendMessageCancel(sourceContact));
     }
 
     private Mono<Result> saveResult(SourceContact sourceContact) {
