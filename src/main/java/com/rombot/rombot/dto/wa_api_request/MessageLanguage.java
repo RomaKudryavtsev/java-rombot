@@ -1,4 +1,4 @@
-package com.rombot.rombot.dto.request;
+package com.rombot.rombot.dto.wa_api_request;
 
 import lombok.AccessLevel;
 import lombok.Data;

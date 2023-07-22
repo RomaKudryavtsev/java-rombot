@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Document("contacts")
-public class Target {
+public class SourceContact {
     @Id
     ObjectId id;
     String name;

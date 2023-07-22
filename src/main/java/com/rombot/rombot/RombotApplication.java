@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 @EnableMongoRepositories(basePackages = "com.rombot.rombot")
 public class RombotApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(RombotApplication.class, args);
 	}

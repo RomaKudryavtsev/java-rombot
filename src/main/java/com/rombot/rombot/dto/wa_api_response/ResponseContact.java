@@ -1,4 +1,4 @@
-package com.rombot.rombot.dto.response;
+package com.rombot.rombot.dto.wa_api_response;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,8 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SendMessageResponse {
-    String messaging_product;
-    ResponseContact[] contacts;
-    ResponseMessage[] messages;
+public class ResponseContact {
+    String input;
+    String wa_id;
 }

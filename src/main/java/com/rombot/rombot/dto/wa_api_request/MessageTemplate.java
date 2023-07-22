@@ -1,4 +1,4 @@
-package com.rombot.rombot.dto.response;
+package com.rombot.rombot.dto.wa_api_request;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResponseMessage {
-    String id;
+public class MessageTemplate {
+    String name;
+    MessageLanguage language;
 }
