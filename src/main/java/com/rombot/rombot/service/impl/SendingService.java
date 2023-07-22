@@ -1,4 +1,4 @@
-package com.rombot.rombot.service;
+package com.rombot.rombot.service.impl;
 
 import com.rombot.rombot.dto.ResultDto;
 import com.rombot.rombot.dto.wa_api_request.MessageLanguage;
@@ -10,6 +10,7 @@ import com.rombot.rombot.entity.SourceContact;
 import com.rombot.rombot.exception.SendMessageException;
 import com.rombot.rombot.repo.ResultRepo;
 import com.rombot.rombot.repo.SourceRepo;
+import com.rombot.rombot.service.ISendingService;
 import com.rombot.rombot.util.ResultMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,10 @@ import java.util.Arrays;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Slf4j
-public class SendingService {
+public class SendingService implements ISendingService {
     final static String MESSAGING_PRODUCT = "whatsapp";
     final static String MESSAGE_TYPE = "template";
-    final static long EMISSION_DELAY_SEC = 2;
+    final static long EMISSION_DELAY_SEC = 5;
     final static int BACKPRESSURE_BUFFER_SIZE = 50;
     @Value("${rombot.lang.code}")
     String languageCode;
@@ -42,9 +43,12 @@ public class SendingService {
     final SourceRepo sourceRepo;
     final ResultRepo resultRepo;
     final WebClient sendingClient;
+    boolean isSending;
 
-    public Flux<ResultDto> startSending(String templateName) {
-        return sourceRepo.findAll()
+    @Override
+    public Flux<ResultDto> startSending(String templateName, Integer numberOfMessages) {
+        isSending = true;
+        return configureMainPipeline(numberOfMessages)
                 .delayElements(Duration.ofSeconds(EMISSION_DELAY_SEC))
                 .flatMap(sourceContact -> resultRepo.existsByPhone(sourceContact.getPhone()).flatMap(b ->
                         b ? Mono.empty() : Mono.just(sourceContact)))
@@ -53,7 +57,18 @@ public class SendingService {
                         .flatMap(resp -> this.saveResult(sourceContact)))
                 .map(ResultMapper::entityToDto)
                 .onErrorContinue((ex, errorResp) -> log.error(ex.getMessage()))
-                .doOnCancel(this::handleMainPipelineCancel);
+                .doOnCancel(this::handleMainPipelineCancel)
+                .takeWhile(sourceContact -> isSending);
+    }
+
+    @Override
+    public Mono<Void> cancelSending() {
+        isSending = false;
+        return Mono.empty();
+    }
+
+    private Flux<SourceContact> configureMainPipeline(Integer numberOfMessages) {
+        return numberOfMessages == null ? sourceRepo.findAll() : sourceRepo.findAll().take(numberOfMessages);
     }
 
     private Mono<SendMessageResponse> sendMessage(SourceContact sourceContact, String templateName) {
