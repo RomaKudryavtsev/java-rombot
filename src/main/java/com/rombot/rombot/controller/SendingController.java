@@ -25,7 +25,7 @@ public class SendingController {
     @Operation(
             summary = "Enable sending message stream",
             description = "This will subscribe you on the reactive stream. " +
-                    "In case of using official API - template is the name of template message." +
+                    "In case of using official API - template is the name of template message. " +
                     "In case of 3rd party API - template is simply the message body."
     )
     @PostMapping(value = "/send", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
