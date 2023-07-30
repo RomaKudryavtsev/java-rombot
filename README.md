@@ -5,6 +5,8 @@ Reactive WhatsApp message sending tool
 
 rombot allows to send template messages via WhatsApp Business / Cloud API.
 
+It can be easily configured to work with 3rd party API (UltraMsg API was used as a sample)
+
 ### Swagger UI
 
 ![](rombot_ui.png)
@@ -12,13 +14,14 @@ rombot allows to send template messages via WhatsApp Business / Cloud API.
 ### Requirements
 - WhatsApp Business Account
 - Application in Meta for Developers
+- ALTERNATIVELY - account on 3rd party API
 - Template message created
 - JDK / JVM installed
 - MongoDB with contacts configured
 
 ### Before start
 
-Add your token and phone ID (issued by Meta) to application.properties.
+Add your credentials to application.properties.
 
 ### Tech stack
 - Java 17
