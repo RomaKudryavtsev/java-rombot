@@ -1,7 +1,6 @@
 package com.rombot.rombot.service;
 
 import com.rombot.rombot.dto.ResultDto;
-import com.rombot.rombot.dto.wa_api_response.SendMessageResponse;
 import com.rombot.rombot.entity.Result;
 import com.rombot.rombot.entity.SourceContact;
 import com.rombot.rombot.repo.ResultRepo;
@@ -19,7 +18,7 @@ import java.time.Duration;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @Slf4j
-public abstract class AbstractSendingService implements ISendingService {
+public abstract class AbstractSendingService<T> implements ISendingService {
     final protected static int BACKPRESSURE_BUFFER_SIZE = 50;
     @Autowired
     SourceRepo sourceRepo;
@@ -56,7 +55,7 @@ public abstract class AbstractSendingService implements ISendingService {
         return Mono.empty();
     }
 
-    protected abstract Mono<SendMessageResponse> sendMessage(SourceContact sourceContact, String templateName);
+    protected abstract Mono<T> sendMessage(SourceContact sourceContact, String templateName);
 
     private Flux<SourceContact> configureMainPipeline(Integer numberOfMessages) {
         return numberOfMessages == null ? sourceRepo.findAll() : sourceRepo.findAll().take(numberOfMessages);

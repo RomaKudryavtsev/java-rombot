@@ -24,7 +24,9 @@ public class SendingController {
     @Tag(name = "START", description = "Start sending messages")
     @Operation(
             summary = "Enable sending message stream",
-            description = "This will subscribe you on the reactive stream"
+            description = "This will subscribe you on the reactive stream. " +
+                    "In case of using official API - template is the name of template message." +
+                    "In case of 3rd party API - template is simply the message body."
     )
     @PostMapping(value = "/send", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ResultDto> sendMessage(@RequestParam("template") String template,

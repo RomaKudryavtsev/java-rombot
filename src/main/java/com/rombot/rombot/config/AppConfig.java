@@ -36,7 +36,7 @@ public class AppConfig {
     @Primary
     public WebClient getWebClient3rdParty() {
         String baseUrl = UriComponentsBuilder
-                .fromUriString("https://api.ultramsg.com/{instanceId}/")
+                .fromUriString("https://api.ultramsg.com/{instanceId}/messages/chat")
                 .buildAndExpand(instanceId)
                 .toUriString();
         return WebClient.builder()
