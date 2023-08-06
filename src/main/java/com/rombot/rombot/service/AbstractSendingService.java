@@ -32,10 +32,10 @@ public abstract class AbstractSendingService<T> implements ISendingService<T> {
 
     @Override
     public Flux<ResultDto> startSending(String templateName, Integer numberOfMessages, Integer delay) {
-        isSending = true;
         return configureMainPipeline(numberOfMessages)
                 .delayElements(Duration.ofSeconds(delay))
                 .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)
+                .doOnSubscribe(sourceContact -> this.isSending = true)
                 .filter(sourceContact -> sourceContact.getPhone().length() == DEFAULT_PHONE_LENGTH &&
                         sourceContact.getPhone().startsWith(DEFAULT_PHONE_PREFIX))
                 .flatMap(sourceContact -> resultRepo.existsByPhone(sourceContact.getPhone()).flatMap(b ->
@@ -45,7 +45,8 @@ public abstract class AbstractSendingService<T> implements ISendingService<T> {
                 .map(ResultMapper::entityToDto)
                 .onErrorContinue((ex, errorResp) -> log.error(ex.getMessage()))
                 .doOnCancel(this::handleMainPipelineCancel)
-                .takeWhile(sourceContact -> isSending);
+                .takeWhile(sourceContact -> isSending)
+                .doOnComplete(() -> this.isSending = false);
     }
 
     @Override

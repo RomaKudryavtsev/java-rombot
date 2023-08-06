@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,6 +14,5 @@ public class SourceContact {
     @Id
     ObjectId id;
     String name;
-    @Field(name = "phoneNumber")
     String phone;
 }
