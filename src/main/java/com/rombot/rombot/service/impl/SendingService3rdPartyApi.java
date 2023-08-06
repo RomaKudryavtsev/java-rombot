@@ -28,17 +28,22 @@ public class SendingService3rdPartyApi extends AbstractSendingService<UltraMsgRe
     //TODO: add check whether message was actually sent
     @Override
     protected Mono<UltraMsgResponse> sendMessage(SourceContact sourceContact, String template) {
-        return sendingClient
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(setSendRequest(sourceContact.getPhone(), template))
-                .retrieve().bodyToMono(UltraMsgResponse.class)
-                .doOnNext(sendMessageResponse -> log.info("SENT: {}", sourceContact.getPhone()))
-                .onErrorMap(error -> new SendMessageException(sourceContact.getPhone(), error.getMessage()))
-                .doOnCancel(() -> handleSendMessageCancel(sourceContact));
+        return Mono.just(personalizeTemplate(sourceContact, template))
+                .flatMap(personalizedTemplate -> sendingClient
+                        .post()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(setSendRequest(sourceContact.getPhone(), personalizedTemplate))
+                        .retrieve().bodyToMono(UltraMsgResponse.class)
+                        .doOnNext(sendMessageResponse -> log.info("SENT: {}", sourceContact.getPhone()))
+                        .onErrorMap(error -> new SendMessageException(sourceContact.getPhone(), error.getMessage()))
+                        .doOnCancel(() -> handleSendMessageCancel(sourceContact)));
     }
 
     private UltraMsgRequest setSendRequest(String phone, String template) {
         return new UltraMsgRequest(token, phone, template);
+    }
+
+    private String personalizeTemplate(SourceContact sourceContact, String template) {
+        return String.format("Добрый день, %s! %s", sourceContact.getName(), template);
     }
 }

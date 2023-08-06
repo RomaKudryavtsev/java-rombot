@@ -15,8 +15,6 @@ public class SourceContact {
     @Id
     ObjectId id;
     String name;
-    String address;
-    String district;
     @Field(name = "phoneNumber")
     String phone;
 }
