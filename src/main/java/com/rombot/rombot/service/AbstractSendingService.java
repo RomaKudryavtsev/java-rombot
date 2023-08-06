@@ -18,8 +18,10 @@ import java.time.Duration;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @Slf4j
-public abstract class AbstractSendingService<T> implements ISendingService {
-    final protected static int BACKPRESSURE_BUFFER_SIZE = 50;
+public abstract class AbstractSendingService<T> implements ISendingService<T> {
+    final static int BACKPRESSURE_BUFFER_SIZE = 50;
+    final static int DEFAULT_PHONE_LENGTH = 12;
+    final static String DEFAULT_PHONE_PREFIX = "972";
     @Autowired
     SourceRepo sourceRepo;
     @Autowired
@@ -33,9 +35,11 @@ public abstract class AbstractSendingService<T> implements ISendingService {
         isSending = true;
         return configureMainPipeline(numberOfMessages)
                 .delayElements(Duration.ofSeconds(delay))
+                .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)
+                .filter(sourceContact -> sourceContact.getPhone().length() == DEFAULT_PHONE_LENGTH &&
+                        sourceContact.getPhone().startsWith(DEFAULT_PHONE_PREFIX))
                 .flatMap(sourceContact -> resultRepo.existsByPhone(sourceContact.getPhone()).flatMap(b ->
                         b ? Mono.empty() : Mono.just(sourceContact)))
-                .onBackpressureBuffer(BACKPRESSURE_BUFFER_SIZE)
                 .flatMap(sourceContact -> this.sendMessage(sourceContact, templateName)
                         .flatMap(resp -> this.saveResult(sourceContact)))
                 .map(ResultMapper::entityToDto)
